@@ -1,4 +1,4 @@
 .PHONY: test
 test:
-	helm lint --strict charts/unikorn-common
-	helm template charts/unikorn-common > /dev/null
+	helm lint --strict charts/helm-common
+	helm template charts/helm-common > /dev/null
