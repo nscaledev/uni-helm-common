@@ -18,13 +18,6 @@ jobs:
       uses: azure/setup-helm@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Add Repos
-      run: |
-        helm repo add unikorn-core https://unikorn-cloud.github.io/core
-        helm repo add unikorn-identity https://unikorn-cloud.github.io/identity
-        helm repo add unikorn-region https://unikorn-cloud.github.io/region
-        helm repo add unikorn-kubernetes https://unikorn-cloud.github.io/kubernetes
-        helm repo add unikorn-ui https://unikorn-cloud.github.io/ui
     - name: Release
       uses: helm/chart-releaser-action@v1.4.1
       env:
