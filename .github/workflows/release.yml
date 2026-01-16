@@ -18,8 +18,7 @@ jobs:
       uses: azure/setup-helm@v4
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    - name: Release
-      uses: helm/chart-releaser-action@v1.4.1
+    - name: Release Helm Chart
+      uses: nscaledev/uni-chart-release-action@v2
       env:
-        CR_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        CR_SKIP_EXISTING: 'true'
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
