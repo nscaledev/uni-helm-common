@@ -158,6 +158,62 @@ Used to lock down APIs to specific clients.
 {{- end }}
 
 {{/*
+Audit sink support.
+Ships audit records to an external collector over mutual TLS, in addition to
+the structured stdout log that is always emitted.  Omit the block entirely and
+no flags are emitted, which leaves stdout logging as the only audit output.
+The host is the single switch: without it the service builds no sink and reads
+no secrets.
+The collector is operated externally, so its CA and the client certificate we
+present to it are deliberately NOT the unikorn CA and mTLS pair used for
+service to service calls.  Point them at the same secrets only if the collector
+really does share that trust chain.
+The signing key is a third, separate thing again: mTLS proves who connected,
+not who produced a body, so the body carries its own asymmetric signature.
+Only the secret is named here.  The key id MUST live inside that secret with
+the key, never in configuration: rotation is then one atomic write needing no
+chart change and no restart, and the two cannot drift.  See values.yaml.
+*/}}
+{{- define "unikorn.audit.flags" -}}
+{{- $audit := .Values.audit -}}
+{{- if ( and .Values.global .Values.global.audit ) -}}
+{{- $audit = .Values.global.audit -}}
+{{- end -}}
+{{- if $audit -}}
+{{- with $host := $audit.host }}
+- --audit-host={{ $host }}
+{{- end }}
+{{- with $timeout := $audit.timeout }}
+- --audit-timeout={{ $timeout }}
+{{- end }}
+{{- with $ca := $audit.ca }}
+{{- with $namespace := $ca.secretNamespace }}
+- --audit-ca-secret-namespace={{ $namespace }}
+{{- end }}
+{{- with $name := $ca.secretName }}
+- --audit-ca-secret-name={{ $name }}
+{{- end }}
+{{- end }}
+{{- with $clientCertificate := $audit.clientCertificate }}
+{{- with $namespace := $clientCertificate.secretNamespace }}
+- --audit-client-certificate-namespace={{ $namespace }}
+{{- end }}
+{{- with $name := $clientCertificate.secretName }}
+- --audit-client-certificate-name={{ $name }}
+{{- end }}
+{{- end }}
+{{- with $signingKey := $audit.signingKey }}
+{{- with $namespace := $signingKey.secretNamespace }}
+- --audit-signing-key-secret-namespace={{ $namespace }}
+{{- end }}
+{{- with $name := $signingKey.secretName }}
+- --audit-signing-key-secret-name={{ $name }}
+{{- end }}
+{{- end }}
+{{- end }}
+{{- end }}
+
+{{/*
 Creates predicatable Kubernetes name compatible UUIDs from name.
 Note we always start with a letter (kubernetes DNS label requirement),
 group 3 starts with "4" (UUIDv4 aka "random") and group 4 with "8"
