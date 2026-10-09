@@ -2,3 +2,44 @@
 #   otlp:
 #     resourceAttributes:
 #       deployment.environment: dev
+#
+#   # Ships audit records to an external collector over mutual TLS, alongside the
+#   # structured stdout log that is always emitted.  Omit this block and services
+#   # log audit records to stdout only.  "host" is the switch: without it no sink
+#   # is built and no secrets are read.
+#   #
+#   # The collector is operated externally, so its CA and the certificate we
+#   # present to it are NOT the unikorn CA and mTLS pair used between services.
+#   audit:
+#     host: https://audit.example.com/v1/records
+#     timeout: 5s
+#
+#     # The collector's CA, so we can verify its server certificate.  Set this
+#     # for a collector on a private CA, and in local development against a
+#     # self-signed endpoint.  Omit it and the system roots are used.
+#     # A kubernetes.io/tls secret, where tls.crt may hold a whole chain.  The
+#     # type requires a tls.key entry, so give it an empty one: there is no
+#     # private key here and the secret should say so.
+#     ca:
+#       secretNamespace: cert-manager
+#       secretName: audit-collector-ca
+#
+#     # Our client certificate, proving to the collector who connected.  Issued
+#     # by the collector's CA from a CSR we generate, so the private key never
+#     # leaves us.  tls.crt may hold the leaf plus any intermediates.
+#     clientCertificate:
+#       secretNamespace: unikorn-identity
+#       secretName: audit-client-certificate
+#
+#     # Signs the body of each request, proving to a third party later who
+#     # produced it.  Deliberately separate from the client certificate above:
+#     # mTLS proves who connected, not who wrote a body.
+#     # An Opaque secret holding the private key AND the key id the collector
+#     # knows it by.  Both live in the secret so rotation is one atomic write
+#     # and they cannot drift; signing under a stale id is not rejected at the
+#     # time, it surfaces later as a failed verification.  Not a cert-manager
+#     # Certificate: there is no X.509 here, and an in-place renewal would
+#     # change the key without changing the id.
+#     signingKey:
+#       secretNamespace: unikorn-identity
+#       secretName: audit-signing-key

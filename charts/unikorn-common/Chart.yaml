@@ -4,6 +4,6 @@ description: Unikorn common templates to keep dependent charts in check.
 
 type: application
 
-version: 0.1.18
+version: 0.1.19
 
 icon: https://raw.githubusercontent.com/unikorn-cloud/assets/main/images/logos/dark-on-light/icon.png
