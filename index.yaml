@@ -2,6 +2,16 @@ apiVersion: v1
 entries:
   unikorn-common:
   - apiVersion: v2
+    created: "2026-10-26T09:25:11.722968802Z"
+    description: Unikorn common templates to keep dependent charts in check.
+    digest: fe77f987c7b7557084566afaeb4d3d24f43c5ea202ac22844b7a5fbe6860ae5a
+    icon: https://raw.githubusercontent.com/unikorn-cloud/assets/main/images/logos/dark-on-light/icon.png
+    name: unikorn-common
+    type: application
+    urls:
+    - https://github.com/nscaledev/uni-helm-common/releases/download/unikorn-common-0.1.20/unikorn-common-0.1.20.tgz
+    version: 0.1.20
+  - apiVersion: v2
     created: "2026-10-09T10:13:53.225223336Z"
     description: Unikorn common templates to keep dependent charts in check.
     digest: 9206ce6a481e230fc75af3a41fde0bd3a2f7bd9113fd0b5b410e9b5c069059c2
@@ -201,4 +211,4 @@ entries:
     urls:
     - https://github.com/unikorn-cloud/helm-common/releases/download/unikorn-common-v0.1.0/unikorn-common-v0.1.0.tgz
     version: v0.1.0
-generated: "2026-10-09T10:13:53.225468735Z"
+generated: "2026-10-26T09:25:11.723087195Z"
