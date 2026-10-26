@@ -43,3 +43,15 @@
 #     signingKey:
 #       secretNamespace: unikorn-identity
 #       secretName: audit-signing-key
+#
+#     # A bearer token, sent as Authorization: Bearer, checked by the collector
+#     # at its edge.  Not redundant with the signature above: an edge cannot
+#     # verify an asymmetric signature cheaply, so the token is the only thing
+#     # that can refuse a request at the door, while the signature is verified
+#     # downstream and is the only thing that proves who produced a body -- the
+#     # collector holds a copy of the token and could forge it.
+#     # An Opaque secret with a "token" entry, re-read per delivery so rotation
+#     # is one atomic write.
+#     token:
+#       secretNamespace: unikorn-identity
+#       secretName: audit-token
