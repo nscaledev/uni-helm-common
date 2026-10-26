@@ -210,6 +210,14 @@ chart change and no restart, and the two cannot drift.  See values.yaml.
 - --audit-signing-key-secret-name={{ $name }}
 {{- end }}
 {{- end }}
+{{- with $token := $audit.token }}
+{{- with $namespace := $token.secretNamespace }}
+- --audit-token-secret-namespace={{ $namespace }}
+{{- end }}
+{{- with $name := $token.secretName }}
+- --audit-token-secret-name={{ $name }}
+{{- end }}
+{{- end }}
 {{- end }}
 {{- end }}
 
