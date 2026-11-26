@@ -324,6 +324,28 @@ nginx.ingress.kubernetes.io/auth-tls-pass-certificate-to-upstream: "true"
 {{- end }}
 
 {{/*
+Reserved tag prefixes.
+Only callers holding an Identity RBAC permission may write tags under a
+reserved prefix, so a managed service can protect the tags that record what it
+manages.  Pass the map of prefix to permission, for example
+"nks.nscale.com/": "nks:tags", as the context:
+  include "unikorn.reservedTagPrefixes.flags" .Values.server.reservedTagPrefixes
+Each service sets its own map.  An empty or missing map renders nothing, and
+the service reserves nothing.  Keys are sorted, so the rendered Deployment does
+not change, and roll its pods, on every upgrade.
+*/}}
+{{- define "unikorn.reservedTagPrefixes.flags" -}}
+{{- $prefixes := . -}}
+{{- if $prefixes -}}
+{{- $pairs := list -}}
+{{- range $prefix := keys $prefixes | sortAlpha -}}
+{{- $pairs = append $pairs (printf "%s=%s" $prefix (index $prefixes $prefix)) -}}
+{{- end -}}
+- {{ printf "--reserved-tag-prefixes=%s" (join "," $pairs) | quote }}
+{{- end -}}
+{{- end }}
+
+{{/*
 Unified service definitions.
 These are typically used by services that rely on other services to function
 and therefore need to get access to the hostname and TLS verification information.
